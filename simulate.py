@@ -7,11 +7,19 @@ Date: 1/20/24
 """
 
 import pybullet as p
+import pybullet_data
 import time
 
+# Create the GUI and simulation parameters
 physicsClient = p.connect(p.GUI)
+p.setAdditionalSearchPath(pybullet_data.getDataPath())
 
+# Create world and its parameters
+p.setGravity(0,0,-9.8)
+planeId = p.loadURDF("plane.urdf")
 p.loadSDF("box.sdf")
+
+# Run the simulation
 for i in range(1000):
     p.stepSimulation()
     time.sleep(1/60)
