@@ -17,7 +17,7 @@ p.setAdditionalSearchPath(pybullet_data.getDataPath())
 # Create world and its parameters
 p.setGravity(0,0,-9.8)
 planeId = p.loadURDF("plane.urdf")
-p.loadSDF("box.sdf")
+p.loadSDF("boxes.sdf")
 
 # Run the simulation
 for i in range(1000):
