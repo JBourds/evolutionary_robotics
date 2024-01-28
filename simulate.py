@@ -15,9 +15,12 @@ physicsClient = p.connect(p.GUI)
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
 
 # Create world and its parameters
-p.setGravity(0,0,-9.8)
-planeId = p.loadURDF("plane.urdf")
-p.loadSDF("boxes.sdf")
+p.setGravity(0, 0, -9.8)
+plane_id = p.loadURDF("plane.urdf")
+p.loadSDF("world.sdf")
+
+# Load the robot into the world
+robot_id = p.loadURDF("body.urdf")
 
 # Run the simulation
 for i in range(1000):
