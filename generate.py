@@ -1,4 +1,5 @@
 import pyrosim.pyrosim as pyrosim
+import random
 
 import constants as c
 
@@ -57,12 +58,12 @@ def generate_brain():
     pyrosim.Send_Synapse(sourceNeuronName=1, targetNeuronName=4, weight=2)
     pyrosim.Send_Synapse(sourceNeuronName=2, targetNeuronName=4, weight=1)
 
-    # Best Weights
-    # pyrosim.Send_Synapse(sourceNeuronName=1, targetNeuronName=3, weight=1)
-    # pyrosim.Send_Synapse(sourceNeuronName=2, targetNeuronName=3, weight=-0.5)
-
-    # pyrosim.Send_Synapse(sourceNeuronName=1, targetNeuronName=4, weight=-0.5)
-    # pyrosim.Send_Synapse(sourceNeuronName=2, targetNeuronName=4, weight=0.25)
+    # Create fully connected network from sensor neuron to motor neurons
+    for sensor_neruon in c.SENSOR_NEURONS:
+        for motor_neuron in c.MOTOR_NEURONS:
+            random_weight: float = 2 * (random.random() - 0.5)
+            print(random_weight)
+            pyrosim.Send_Synapse(sourceNeuronName=sensor_neruon, targetNeuronName=motor_neuron, weight=random_weight)
 
     # End simulation
     pyrosim.End()
