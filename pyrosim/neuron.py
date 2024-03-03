@@ -6,6 +6,8 @@ import pyrosim.pyrosim as pyrosim
 
 import pyrosim.constants as c
 
+from pyrosim.synapse import SYNAPSE
+
 class NEURON: 
 
     def __init__(self,line):
@@ -72,8 +74,34 @@ class NEURON:
         neuron_value: float = pyrosim.Get_Touch_Sensor_Value_For_Link(self.Get_Link_Name())
         self.Set_Value(neuron_value)
 
-    def Update_Hidden_Or_Motor_Neuron(self):
+    def Update_Hidden_Or_Motor_Neuron(self, neurons: dict[str: ...], synapses: dict[str: SYNAPSE]):
+        """
+        Method for updating a hidden or motor neuron. Requires access to other parts of the neural network.
+
+        :param neurons: Dictionary containing all the neuron names mapped to neuron objects.
+        :param synapses: Dictionary mapping tuples with the source/sink neuron to the synapse object.
+        """
+        # Initialize value to 0
         self.Set_Value(0)
+        # Compute weighted sum
+        for presynaptic_neuron, postsynaptic_neuron in synapses.keys():
+            # Check if the current neuron is the postsynaptic neuron
+            if postsynaptic_neuron == self.Get_Name():
+                neuron_weight: float = neurons.get(presynaptic_neuron).Get_Value()
+                synapse_weight: float = synapses.get((presynaptic_neuron, postsynaptic_neuron)).Get_Weight()
+                self.Allow_Presynaptic_Neuron_To_Influence_Me(neuron_weight, synapse_weight)
+        self.Threshold()
+        
+
+    def Allow_Presynaptic_Neuron_To_Influence_Me(self, neuron_value: float, synapse_weight: float):
+        """
+        Method to add the result of multiplying the presynaptic neuron value with the synapse weight.
+
+        :param neuron_value:   Value of the presynaptic neuron connected to the current neuron via a synapse.
+        :param synapse_weight: Weight of the synapse connecting the presynaptic neuron to the current one.
+        """
+        self.Add_To_Value(neuron_value * synapse_weight)
+
 
 # -------------------------- Private methods -------------------------
 

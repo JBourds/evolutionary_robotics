@@ -80,4 +80,3 @@ class Robot:
         Method responsible for activating the robot's neural network sensor/motor neurons.
         """
         self.nn.Update()
-        self.nn.Print()

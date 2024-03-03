@@ -10,8 +10,8 @@ import numpy as np
 
 # Simulation parameters
 GRAVITY: float = -9.8
-SIMULATION_STEPS: int = 10_000
-TIMESTEP: float = 1/600
+SIMULATION_STEPS: int = 100_000
+TIMESTEP: float = 1/6000
 
 # Robot parameters
 FRONT_AMPLITUDE: float = np.pi / 6
