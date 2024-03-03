@@ -10,7 +10,7 @@ import numpy as np
 
 # Simulation parameters
 GRAVITY: float = -9.8
-SIMULATION_STEPS: int = 1_000
+SIMULATION_STEPS: int = 10_000
 TIMESTEP: float = 1/600
 
 # Robot parameters
@@ -24,6 +24,7 @@ FRONT_MAX_FORCE: float = 20
 PLANE_FILE: str = 'plane.urdf'
 WORLD_FILE: str = 'world.sdf'
 ROBOT_FILE: str = 'body.urdf'
+BRAIN_FILE: str = 'brain.nndf'
 
 DATA_DIRECTORY: str = 'data/'
 FRONT_TARGET_ANGLES_FILE: str = f'{DATA_DIRECTORY}front_target_angles.npy'

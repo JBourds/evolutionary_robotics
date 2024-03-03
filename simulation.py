@@ -32,7 +32,7 @@ class Simulation:
         p.setGravity(0, 0, c.GRAVITY)
 
         self.world: World = World()
-        self.robot: Robot = Robot()
+        self.robot: Robot = Robot(c.ROBOT_FILE, c.BRAIN_FILE)
 
         # Initialize robot
         pyrosim.Prepare_To_Simulate(self.robot.id)
@@ -53,7 +53,8 @@ class Simulation:
         """
         for time_step in range(c.SIMULATION_STEPS):
             self.robot.sense(time_step)
-            self.robot.act(time_step)
+            self.robot.think()
+            self.robot.act()
             p.stepSimulation()
             time.sleep(c.TIMESTEP)
         p.disconnect()

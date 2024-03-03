@@ -38,32 +38,21 @@ class Motor:
         self.max_force: float = max_force
         self.motor_values: np.array = amplitude * np.sin(frequency * np.linspace(0, 2 * np.pi, num=simulation_steps) + offset)
 
-    def set_value(self, robot_id: int, time_step: int) -> float:
+    def set_value(self, robot_id: int, desired_angle: float) -> float:
         """
         Set the value for a joint's motor at a given timestep given the robot ID (don't need full Robot object).
 
-        :param robot_id:  Integer value corresponding to the robot ID the motor is for
-        :param time_step: Integer time step for motor value to use.
+        :param robot_id:      Integer value corresponding to the robot ID the motor is for
+        :param desired_angle: The angle which is used to control the motor's movement.
 
         :returns: Motor value at time step.
         """
-        # Assert it is a valid timestep
-        assert 0 <= time_step < len(self.motor_values), f'Invalid timestep for array of length {len(self.motor_values)}.'
        
         pyrosim.Set_Motor_For_Joint(
                 bodyIndex = robot_id,
                 jointName = self.joint_name,
                 controlMode = p.POSITION_CONTROL,
-                targetPosition = self.motor_values[time_step],
+                targetPosition = desired_angle,
                 maxForce = self.max_force)
         
-        return self.motor_values[time_step]
-    
-    def save_values(self, file_path: str):
-        """
-        Method used to save the motor values to a file.
-
-        :param file_path: The file path to save motor values to.
-        """
-        np.save(file_path, self.motor_values)
-
+        return desired_angle

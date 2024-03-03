@@ -1,6 +1,6 @@
 import pyrosim.pyrosim as pyrosim
 
-from constants import ROBOT_FILE, WORLD_FILE
+import constants as c
 
 # Cube Parameters
 length: float = 1
@@ -14,13 +14,13 @@ z1: float = 0.5
 
 
 def create_world():
-    pyrosim.Start_SDF(WORLD_FILE)
+    pyrosim.Start_SDF(c.WORLD_FILE)
     pyrosim.Send_Cube(name='Box', pos=[x1, y1, z1], size=[length, width, height])
     pyrosim.End()
 
 
-def create_robot():
-    pyrosim.Start_URDF(ROBOT_FILE)
+def generate_body():
+    pyrosim.Start_URDF(c.ROBOT_FILE)
     # Move it away from the world cube
     x2: float = 1.5
     y2: float = 1.5
@@ -29,13 +29,35 @@ def create_robot():
     # Absolute cube/joint positioning
     pyrosim.Send_Cube(name='Torso', pos=[x2, y2, z2], size=[length, width, height])
     pyrosim.Send_Joint(name='Torso_FrontLeg', parent='Torso', child='FrontLeg', type='revolute', position=[x2 - 0.5, y2, z2 - 0.5])
+    
     # Relative link/joint positioning
     pyrosim.Send_Cube(name='FrontLeg', pos=[-0.5, 0, -0.5], size=[length, width, height])
     pyrosim.Send_Joint(name='Torso_BackLeg', parent='Torso', child='BackLeg', type='revolute', position=[x2 + 0.5, y2, z2 - 0.5])
     pyrosim.Send_Cube(name='BackLeg', pos=[0.5, 0, -0.5], size=[length, width, height])
+
+    # End simulation
+    pyrosim.End()
+
+def generate_brain():
+    pyrosim.Start_NeuralNetwork(c.BRAIN_FILE)
+
+    # Sensor Neurons
+    pyrosim.Send_Sensor_Neuron(name=0 , linkName="Torso")
+    pyrosim.Send_Sensor_Neuron(name=1 , linkName="BackLeg")
+    pyrosim.Send_Sensor_Neuron(name=2 , linkName="FrontLeg")
+
+    # Motor Neurons
+    pyrosim.Send_Motor_Neuron(name=3 , jointName="Torso_BackLeg")
+
+
     # End simulation
     pyrosim.End()
 
 
+def create_robot():
+    ...
+
+
 create_world()
-create_robot()
+generate_body()
+generate_brain()

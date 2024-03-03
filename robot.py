@@ -8,6 +8,7 @@ Last Modified: 2/25/24
 
 import pybullet as p
 import pyrosim.pyrosim as pyrosim
+from pyrosim.neuralNetwork import NEURAL_NETWORK
 
 import constants as c
 from motor import Motor
@@ -15,7 +16,7 @@ from sensor import Sensor
 
 class Robot:
     
-    def __init__(self):
+    def __init__(self, body_file: str, brain_file: str):
         """
         Class representing a robot in the simulation.
 
@@ -26,7 +27,8 @@ class Robot:
         """
         self.sensors: dict[str: Sensor] = {}
         self.motors: dict[str: Motor] = {}
-        self.id: int = p.loadURDF(c.ROBOT_FILE)
+        self.id: int = p.loadURDF(body_file)
+        self.nn: NEURAL_NETWORK = NEURAL_NETWORK(brain_file)
 
     def prepare_to_sense(self):
         """
@@ -49,6 +51,7 @@ class Robot:
         Method to load in all the motors from Pyrosim.
         """
         if motors is None:
+            joint_names: list[str] = [joint_name.decode('ASCII') for joint_name in pyrosim.jointNamesToIndices]
             self.motors = {
                 joint_name: Motor(joint_name, 
                                 c.FRONT_AMPLITUDE, 
@@ -56,16 +59,25 @@ class Robot:
                                 c.FRONT_PHASE_OFFSET,
                                 c.FRONT_MAX_FORCE,
                                 c.SIMULATION_STEPS)
-                for joint_name in pyrosim.jointNamesToIndices
+                for joint_name in joint_names
             }
         else: 
             self.motors = motors
 
-    def act(self, time_step: int):
+    def act(self):
         """
         Method which is responsible for activating the robot's motors at a specific time step.
-
-        :param time_step: Integer value corresponding to the time step/index used by the motors.
         """
-        for motor_name, motor in self.motors.items():
-            motor.set_value(self.id, time_step)
+        for neuron_name in self.nn.Get_Neuron_Names():
+            if self.nn.Is_Motor_Neuron(neuron_name):
+                joint_name: str = self.nn.Get_Motor_Neuron_Joint(neuron_name)
+                desired_angle: float = self.nn.Get_Value_Of(neuron_name)
+                motor: Motor = self.motors.get(joint_name)
+                motor.set_value(self.id, desired_angle) 
+
+    def think(self):
+        """
+        Method responsible for activating the robot's neural network sensor/motor neurons.
+        """
+        self.nn.Update()
+        self.nn.Print()
