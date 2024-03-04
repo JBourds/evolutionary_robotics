@@ -18,7 +18,7 @@ SIMULATE: str = f'{PYTHON} simulate.py'
 
 # Simulation parameters
 GRAVITY: float = -9.8
-SIMULATION_STEPS: int = 1_000
+SIMULATION_STEPS: int = 10_000
 TIMESTEP: float = 1/6000
 
 # Cube parameters

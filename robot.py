@@ -32,7 +32,6 @@ class Robot:
         self.solution_id: int = solution_id
         self.id: int = p.loadURDF(body_file)
         self.nn: NEURAL_NETWORK = NEURAL_NETWORK(c.get_brain_file(solution_id))
-        c.delete_brain_file(solution_id)
 
     def prepare_to_sense(self):
         """
