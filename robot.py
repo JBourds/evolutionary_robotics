@@ -80,3 +80,15 @@ class Robot:
         Method responsible for activating the robot's neural network sensor/motor neurons.
         """
         self.nn.Update()
+
+    def get_fitness(self) -> float:
+        """
+        Method to retrieve the fitness value for a robot in the simulation.
+
+        :returns: Fitness value for the robot's body and link 0.
+        """
+        state_of_link_zero: tuple[tuple[float]] = p.getLinkState(self.id, 0)
+        position_of_link_zero: tuple = state_of_link_zero[0]
+        x, y, z = position_of_link_zero
+        with open(c.FITNESS_FILE, 'w') as file:
+            file.write(str(x))

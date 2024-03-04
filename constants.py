@@ -9,7 +9,7 @@ Last Modified: 2/25/24
 import numpy as np
 
 # Automating search
-NUM_SIMULATIONS: int = 5
+NUMBER_OF_GENERATIONS: int = 50
 PYTHON: str = 'python'
 GENERATE: str = f'{PYTHON} generate.py'
 SIMULATE: str = f'{PYTHON} simulate.py'
@@ -18,6 +18,11 @@ SIMULATE: str = f'{PYTHON} simulate.py'
 GRAVITY: float = -9.8
 SIMULATION_STEPS: int = 1_000
 TIMESTEP: float = 1/6000
+
+# Cube parameters
+CUBE_LENGTH: float = 1
+CUBE_WIDTH: float = 1
+CUBE_HEIGHT: float = 1
 
 # Robot parameters
 FRONT_AMPLITUDE: float = np.pi / 6
@@ -48,3 +53,4 @@ FRONT_TARGET_ANGLES_FILE: str = f'{DATA_DIRECTORY}front_target_angles.npy'
 BACK_TARGET_ANGLES_FILE: str = f'{DATA_DIRECTORY}back_target_angles.npy'
 BACK_LEG_FILE: str = f'{DATA_DIRECTORY}back_leg_sensor_data.npy'
 FRONT_LEG_FILE: str = f'{DATA_DIRECTORY}front_leg_sensor_data.npy'
+FITNESS_FILE: str = f'{DATA_DIRECTORY}fitness.txt'

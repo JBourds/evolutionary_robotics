@@ -18,16 +18,21 @@ from world import World
 
 class Simulation:
 
-    def __init__(self):
+    def __init__(self, use_gui: bool = True):
         """
         Class responsible for running the Pyrosim simulation
 
+        :param use_gui: Boolean for whether the simulation should run with or without the GUI component.
+
         # Fields:
+            * `use_gui`:        Boolean for whether to use the GUI or not.  
             * `physics_engine`: The pybullet physics engine being used.
             * `world`:          The simulation world being used.
             * `robot`:          The robot being simulated.
         """
-        self.physics_engine = p.connect(p.GUI)
+        # Initialize the physics engine
+        self.use_gui: bool = use_gui
+        self.physics_engine = p.connect(p.GUI if use_gui else p.DIRECT)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(0, 0, c.GRAVITY)
 
@@ -47,6 +52,14 @@ class Simulation:
         """
         p.disconnect()
 
+    def get_fitness(self):
+        """
+        Method to get the robot's fitness.
+        """
+        self.state_of_link_zero = self.robot.get_fitness()
+        print(self.state_of_link_zero)
+        exit()
+
     def run(self):
         """
         Method to actually run the simulation.
@@ -56,5 +69,5 @@ class Simulation:
             self.robot.think()
             self.robot.act()
             p.stepSimulation()
-            time.sleep(c.TIMESTEP)
-        p.disconnect()
+            if self.use_gui:
+                time.sleep(c.TIMESTEP)
