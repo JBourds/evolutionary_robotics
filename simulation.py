@@ -18,18 +18,22 @@ from world import World
 
 class Simulation:
 
-    def __init__(self, use_gui: bool = True):
+    def __init__(self, solution_id: int, use_gui: bool = True):
         """
         Class responsible for running the Pyrosim simulation
 
-        :param use_gui: Boolean for whether the simulation should run with or without the GUI component.
+        :param solution_id: The integer ID for the brain_<ID>.nndf file to use for a neural network.
+        :param use_gui:     Boolean for whether the simulation should run with or without the GUI component.
 
         # Fields:
+            * `solution_id`:    The integer ID for the brain_<ID>.nndf file to use for a neural network.
             * `use_gui`:        Boolean for whether to use the GUI or not.  
             * `physics_engine`: The pybullet physics engine being used.
             * `world`:          The simulation world being used.
             * `robot`:          The robot being simulated.
         """
+        self.solution_id: int = solution_id
+
         # Initialize the physics engine
         self.use_gui: bool = use_gui
         self.physics_engine = p.connect(p.GUI if use_gui else p.DIRECT)
@@ -37,7 +41,7 @@ class Simulation:
         p.setGravity(0, 0, c.GRAVITY)
 
         self.world: World = World()
-        self.robot: Robot = Robot(c.ROBOT_FILE, c.BRAIN_FILE)
+        self.robot: Robot = Robot(c.ROBOT_FILE, solution_id)
 
         # Initialize robot
         pyrosim.Prepare_To_Simulate(self.robot.id)
@@ -57,8 +61,6 @@ class Simulation:
         Method to get the robot's fitness.
         """
         self.state_of_link_zero = self.robot.get_fitness()
-        print(self.state_of_link_zero)
-        exit()
 
     def run(self):
         """

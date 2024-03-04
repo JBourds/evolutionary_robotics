@@ -6,6 +6,7 @@ Author: Jordan Bourdeau
 Last Modified: 2/25/24
 """
 
+import os
 import pybullet as p
 import pyrosim.pyrosim as pyrosim
 from pyrosim.neuralNetwork import NEURAL_NETWORK
@@ -16,19 +17,22 @@ from sensor import Sensor
 
 class Robot:
     
-    def __init__(self, body_file: str, brain_file: str):
+    def __init__(self, body_file: str, solution_id: int):
         """
         Class representing a robot in the simulation.
 
         # Fields:
-            * `sensors`: Dictionary mapping sensor names to corresponding objects.
-            * `motors`:  Dictionary mapping motor names to corresponding objects.
-            * `id`:      ID the robot is categorized as in the simulation.
+            * `sensors`:     Dictionary mapping sensor names to corresponding objects.
+            * `motors`:      Dictionary mapping motor names to corresponding objects.
+            * `solution_id`: Solution ID for the neural network used to control the robot.
+            * `id`:          ID the robot is categorized as in the simulation.
         """
         self.sensors: dict[str: Sensor] = {}
         self.motors: dict[str: Motor] = {}
+        self.solution_id: int = solution_id
         self.id: int = p.loadURDF(body_file)
-        self.nn: NEURAL_NETWORK = NEURAL_NETWORK(brain_file)
+        self.nn: NEURAL_NETWORK = NEURAL_NETWORK(c.get_brain_file(solution_id))
+        c.delete_brain_file(solution_id)
 
     def prepare_to_sense(self):
         """
@@ -90,5 +94,10 @@ class Robot:
         state_of_link_zero: tuple[tuple[float]] = p.getLinkState(self.id, 0)
         position_of_link_zero: tuple = state_of_link_zero[0]
         x, y, z = position_of_link_zero
-        with open(c.FITNESS_FILE, 'w') as file:
+        # Write to a temp file and then move the temp file all at once
+        # Note: This only works since it is only one directory step deep
+        fitness_file: str = c.get_fitness_file(self.solution_id).split('/')
+        temp_file: str = '/temp_'.join(fitness_file)
+        with open(temp_file, 'w') as file:
             file.write(str(x))
+        os.rename(temp_file, '/'.join(fitness_file))

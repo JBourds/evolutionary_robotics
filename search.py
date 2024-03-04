@@ -10,11 +10,8 @@ Date Created: 3/3/24
 import os
 
 import constants as c
-from hillclimber import HillClimber
+from parallel_hillclimber import ParallelHillClimber
 
-# for _ in range(c.NUM_SIMULATIONS):
-#     os.system(c.GENERATE)
-#     os.system(c.SIMULATE)
-
-hill_climber: HillClimber = HillClimber()
-hill_climber.evolve()
+parallel_hill_climber: ParallelHillClimber = ParallelHillClimber()
+parallel_hill_climber.evolve()
+parallel_hill_climber.show_best()

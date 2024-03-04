@@ -7,9 +7,11 @@ Last Modified: 2/25/24
 """
 
 import numpy as np
+import os
 
 # Automating search
-NUMBER_OF_GENERATIONS: int = 50
+NUMBER_OF_GENERATIONS: int = 10
+POPULATION_SIZE: int = 10
 PYTHON: str = 'python'
 GENERATE: str = f'{PYTHON} generate.py'
 SIMULATE: str = f'{PYTHON} simulate.py'
@@ -43,14 +45,63 @@ MOTOR_NEURONS: dict[int: str] = {
 }
 
 # File input/output
-PLANE_FILE: str = 'plane.urdf'
-WORLD_FILE: str = 'world.sdf'
-ROBOT_FILE: str = 'body.urdf'
-BRAIN_FILE: str = 'brain.nndf'
-
 DATA_DIRECTORY: str = 'data/'
-FRONT_TARGET_ANGLES_FILE: str = f'{DATA_DIRECTORY}front_target_angles.npy'
-BACK_TARGET_ANGLES_FILE: str = f'{DATA_DIRECTORY}back_target_angles.npy'
-BACK_LEG_FILE: str = f'{DATA_DIRECTORY}back_leg_sensor_data.npy'
-FRONT_LEG_FILE: str = f'{DATA_DIRECTORY}front_leg_sensor_data.npy'
-FITNESS_FILE: str = f'{DATA_DIRECTORY}fitness.txt'
+PLANE_FILE: str = f'plane.urdf'
+WORLD_FILE: str = f'{DATA_DIRECTORY}world.sdf'
+ROBOT_FILE: str = f'{DATA_DIRECTORY}body.urdf'
+
+def get_brain_file(solution_id: int) -> str:
+    """
+    Function used to get the correct brain file based on a solution ID.
+
+    :param solution_id: Integer value corresponding to the solution ID.
+
+    :returns: String for the directory location with the neural network file.
+    """
+    brain_file: str = f'{DATA_DIRECTORY}brain_{solution_id}.nndf'
+    return brain_file
+
+def delete_brain_file(solution_id: int):
+    """
+    Function used to delete a brain file after it has been used.
+
+    :param solution_id: Integer value corresponding to the solution ID.
+    """
+    try:
+        os.remove(f'{DATA_DIRECTORY}brain_{solution_id}.nndf')
+    except Exception as e:
+        print(e)
+
+def delete_all_brain_files():
+    """
+    Function used to delete any remnant brain files in the data directory.
+    """
+    os.system(f'rm {DATA_DIRECTORY}brain*.nndf >/dev/null 2>&1')
+
+def get_fitness_file(solution_id: int) -> str:
+    """
+    Function used to get the correct fitness file based on a solution ID.
+
+    :param solution_id: Integer value corresponding to the solution ID.
+
+    :returns: String for the directory location with the neural network file.
+    """
+    fitness_file: str = f'{DATA_DIRECTORY}fitness_{solution_id}.txt'
+    return fitness_file
+
+def delete_fitness_file(solution_id: int):
+    """
+    Function used to delete a fitness file after it has been used.
+
+    :param solution_id: Integer value corresponding to the solution ID.
+    """
+    try:
+        os.remove(f'{DATA_DIRECTORY}fitness_{solution_id}.txt')
+    except Exception as e:
+        print(e)
+
+def delete_all_fitness_files():
+    """
+    Function used to delete any remnant fitness files in the data directory.
+    """
+    os.system(f'rm {DATA_DIRECTORY}fitness*.nndf >/dev/null 2>&1')

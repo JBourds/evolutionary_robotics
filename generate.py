@@ -62,7 +62,6 @@ def generate_brain():
     for sensor_neruon in c.SENSOR_NEURONS:
         for motor_neuron in c.MOTOR_NEURONS:
             random_weight: float = 2 * (random.random() - 0.5)
-            print(random_weight)
             pyrosim.Send_Synapse(sourceNeuronName=sensor_neruon, targetNeuronName=motor_neuron, weight=random_weight)
 
     # End simulation
